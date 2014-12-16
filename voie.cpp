@@ -17,10 +17,10 @@ Voie::Voie(QDate date, QStringList list):m_date(date)
         m_perf = list[4];
 }
 
-Voie::Voie(QString str)
+Voie::Voie(QString str, QString sep)
 {
     QStringList param = str.split(";");
-    QDate date(QStringToDate(param[0]));
+    QDate date(QStringToDate(param[0], sep));
     param.pop_front();
 
     m_date = date;

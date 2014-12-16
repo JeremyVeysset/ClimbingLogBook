@@ -11,7 +11,7 @@ public:
     Voie();
     Voie(QDate date, QString cote, QString nom, QString secteur, QString perf="", QString commentaire="");
     Voie(QDate date, QStringList list);
-    Voie(QString list);
+    Voie(QString str, QString sep = "/");
     QDate getDate() const {return m_date;}
     QString getNom() const {return m_nom;}
     QString getSecteur() const {return m_secteur;}

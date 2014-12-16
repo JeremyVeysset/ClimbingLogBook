@@ -10,12 +10,25 @@ Voie::Voie(QDate date, QString cote, QString nom, QString secteur, QString comme
 
 Voie::Voie(QDate date, QStringList list):m_date(date)
 {
-        m_date = date;
         m_cote = list[0];
         m_nom = list[1];
         m_secteur = list[2];
         m_commentaire = list[3];
         m_perf = list[4];
+}
+
+Voie::Voie(QString str)
+{
+    QStringList param = str.split(";");
+    QDate date(QStringToDate(param[0]));
+    param.pop_front();
+
+    m_date = date;
+    m_cote = param[0];
+    m_nom = param[1];
+    m_secteur = param[2];
+    m_commentaire = param[3];
+    m_perf = param[4];
 }
 
 void Voie::setParametres(QDate const & date, QStringList list)
@@ -39,4 +52,13 @@ QStringList Voie::nomParametres()
     list.push_back(QString("Commentaire"));
 
     return list;
+}
+
+QDate QStringToDate(QString dateStr, QString sep)
+{
+    QStringList list;
+    list = dateStr.split(sep);
+    QDate date(list[2].toInt(), list[1].toInt(), list[0].toInt());
+
+    return date;
 }

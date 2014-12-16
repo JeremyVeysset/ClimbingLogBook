@@ -51,5 +51,4 @@ private:
     void parametresVue();
 };
 
-QDate QStringToDate(QString date, QString sep = "/");
 #endif // WIDGET_H

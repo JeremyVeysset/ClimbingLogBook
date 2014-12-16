@@ -11,6 +11,7 @@ public:
     Voie();
     Voie(QDate date, QString cote, QString nom, QString secteur, QString perf="", QString commentaire="");
     Voie(QDate date, QStringList list);
+    Voie(QString list);
     QDate getDate() const {return m_date;}
     QString getNom() const {return m_nom;}
     QString getSecteur() const {return m_secteur;}
@@ -25,9 +26,12 @@ public:
     void setPerf(QString const & perf) {m_perf = perf;}
     void setParametres(QDate const & date, QStringList list);
     static QStringList nomParametres();
+
 private:
     QDate m_date;
-    QString m_nom, m_cote, m_secteur, m_commentaire, m_perf;
+    QString m_cote, m_nom, m_secteur, m_commentaire, m_perf;
 };
+
+QDate QStringToDate(QString date, QString sep = "/");
 
 #endif // VOIE_H

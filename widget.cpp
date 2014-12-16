@@ -117,17 +117,14 @@ void Widget::ouvrirFichier()
 
 void Widget::lectureFichierCSV()
 {
-    fichier->open(QIODevice::ReadWrite);
+    fichier->open(QIODevice::ReadOnly);
     QString ligne;
     QStringList param;
 
     while (!fichier->atEnd())
     {
         ligne = fichier->readLine();
-        param = ligne.split(";");
-        QDate date(QStringToDate(param[0]));
-        param.pop_front();
-        listeVoies.push_back(new Voie(date, param));
+        listeVoies.push_back(new Voie(ligne));
     }
 
     trierVue(choixTri->currentText());
@@ -153,14 +150,4 @@ void Widget::rafraichirModele()
     }
 
     return;
-}
-
-
-QDate QStringToDate(QString dateStr, QString sep)
-{
-    QStringList list;
-    list = dateStr.split(sep);
-    QDate date(list[2].toInt(), list[1].toInt(), list[0].toInt());
-
-    return date;
 }

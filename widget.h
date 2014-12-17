@@ -26,11 +26,15 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
-    void lectureFichierCSV();
+    void lectureFichierCMB(QFile & fichier);
+    void lectureFichierCSV(QFile & fichier);
+    void ecrireFichierCMB(QFile & fichier);
+    void ecrireFichierCSV(QFile & fichier);
 
 public slots:
     void ouvrirFichier();
     void trierVue(QString const & str);
+    void sauvegarderFichier();
 
 private:
     Ui::Widget *ui;
@@ -42,7 +46,6 @@ private:
     QHBoxLayout * layoutTri;
     QLabel * labelTri;
     QComboBox * choixTri;
-    QFile * fichier;
     QStandardItemModel * modele;
     QTableView * vue;
     QVector <Voie *> listeVoies;

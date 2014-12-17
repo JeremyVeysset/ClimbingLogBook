@@ -6,15 +6,18 @@
 #include <QtAlgorithms>
 #include <iostream>
 #include <iterator>
+#include <QSettings>
+#include <QTextStream>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
+    Voie::initVoieSystem();
+
     ui->setupUi(this);
     layoutPrincipal = new QVBoxLayout;
     layoutBarreIcones = new QHBoxLayout;
-    fichier = new QFile;
 
     boutonAjouterUtilisateur = new QPushButton(QIcon(QString("./Pictures/IconeHomme.png")), QString(""));
     boutonChargerCarnet = new QPushButton(QIcon(QString("./Pictures/IconeOuvrir.png")), QString(""));
@@ -51,6 +54,7 @@ Widget::Widget(QWidget *parent) :
 
     QObject::connect(boutonChargerCarnet, SIGNAL(clicked()), this, SLOT(ouvrirFichier()));
     QObject::connect(choixTri, SIGNAL(currentIndexChanged(QString)), this, SLOT(trierVue(QString)));
+    QObject::connect(boutonSauvegarder, SIGNAL(clicked()), this, SLOT(sauvegarderFichier()));
 }
 
 Widget::~Widget()
@@ -64,7 +68,6 @@ Widget::~Widget()
     delete layoutTri;
     delete labelTri;
     delete choixTri;
-    delete fichier;
     delete vue;
 
     modele->clear();
@@ -100,34 +103,104 @@ void Widget::trierVue(QString const & str)
 
 void Widget::ouvrirFichier()
 {
-    delete fichier;
-    fichier = new QFile(QFileDialog::getOpenFileName(this, "Ouvrir un Carnet de croix", QString(), "Fichiers CSV (*.csv)"));
+    QFile fichier(QFileDialog::getOpenFileName(this, "Ouvrir un Carnet de croix", QString(), "Fichiers Climb (*.cmb);;Fichiers CSV (*.csv)"));
 
-    QString ext = fichier->fileName();
-    QStringList fileNameSplit;
-    fileNameSplit = ext.split(".");
-    ext = fileNameSplit.last();
+    QString format = fichier.fileName().split(".").last();
 
-    if (ext == "csv")
-        lectureFichierCSV();
+    if (format.toLower() == "csv")
+        lectureFichierCSV(fichier);
+    else if (format.toLower() == "cmb")
+        lectureFichierCMB(fichier);
 
     rafraichirModele();
     trierVue(choixTri->currentText());
 }
 
-void Widget::lectureFichierCSV()
+void Widget::sauvegarderFichier()
 {
-    fichier->open(QIODevice::ReadOnly);
+    QFile fichierEcrire(QFileDialog::getSaveFileName(this, "Sauvegarder un Carnet de croix", QString(), "Fichiers Climb (*.cmb);;Fichiers CSV (*.csv)"));
+    QString format(fichierEcrire.fileName().split(".").last());
+
+    if (format.toLower() == "cmb")
+        ecrireFichierCMB(fichierEcrire);
+    else if (format.toLower() == "csv")
+        ecrireFichierCSV(fichierEcrire);
+
+    return;
+}
+
+void Widget::lectureFichierCMB(QFile & fichier)
+{
+    int i;
+    fichier.open(QIODevice::ReadOnly);
+    QDataStream in(&fichier);
+
+    for (i=0; i<listeVoies.size(); i++)
+        delete listeVoies[i];
+    listeVoies.clear();
+
+    i = 0;
+    while (!fichier.atEnd())
+    {
+        Voie v;
+        in >> v;
+        listeVoies.append(new Voie(v));
+    }
+
+    fichier.close();
+
+    return;
+}
+
+void Widget::lectureFichierCSV(QFile & fichier)
+{
+    fichier.open(QIODevice::ReadOnly);
     QString ligne;
     QStringList param;
 
-    while (!fichier->atEnd())
+    while (!fichier.atEnd())
     {
-        ligne = fichier->readLine();
+        ligne = fichier.readLine();
         listeVoies.push_back(new Voie(ligne));
     }
 
     trierVue(choixTri->currentText());
+
+    return;
+}
+
+void Widget::ecrireFichierCMB(QFile & fichier)
+{
+    fichier.open(QIODevice::WriteOnly);
+    QDataStream out(&fichier);
+
+    for (int i=0; i<listeVoies.size(); i++)
+        out << *listeVoies[i];
+    fichier.close();
+
+    return;
+}
+
+void Widget::ecrireFichierCSV(QFile & fichier)
+{
+    fichier.open(QIODevice::WriteOnly);
+    QTextStream out(&fichier);
+
+    QStringList param;
+    for (int i=0; i<listeVoies.size(); i++)
+    {
+        param.clear();
+        param << listeVoies[i]->getDate().toString(QString("dd/MM/yyyy"))
+              << listeVoies[i]->getCote()
+              << listeVoies[i]->getNom()
+              << listeVoies[i]->getSecteur()
+              << listeVoies[i]->getCommmentaire()
+              << listeVoies[i]->getPerf();
+
+        out << param.join(QString(";"));
+    }
+
+    fichier.close();
 
     return;
 }

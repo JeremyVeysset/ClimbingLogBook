@@ -4,6 +4,7 @@
 #include <QDate>
 #include <QString>
 #include <QStringList>
+#include <QVariant>
 
 class Voie
 {
@@ -26,12 +27,20 @@ public:
     void setPerf(QString const & perf) {m_perf = perf;}
     void setParametres(QDate const & date, QStringList list);
     static QStringList nomParametres();
+    static void initVoieSystem();
 
 private:
     QDate m_date;
     QString m_cote, m_nom, m_secteur, m_commentaire, m_perf;
+
+    friend QDataStream & operator<<(QDataStream & out, const Voie & v);
+    friend QDataStream & operator>>(QDataStream & in, Voie & v);
 };
 
 QDate QStringToDate(QString date, QString sep = "/");
+
+Q_DECLARE_METATYPE(Voie)
+QDataStream & operator<<(QDataStream & out, const Voie & v);
+QDataStream & operator>>(QDataStream & in, Voie & v);
 
 #endif // VOIE_H

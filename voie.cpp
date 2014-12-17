@@ -1,3 +1,4 @@
+
 #include "voie.h"
 
 Voie::Voie()
@@ -61,4 +62,31 @@ QDate QStringToDate(QString dateStr, QString sep)
     QDate date(list[2].toInt(), list[1].toInt(), list[0].toInt());
 
     return date;
+}
+
+QDataStream & operator<<(QDataStream & out, const Voie & v)
+{
+    out << v.m_date << v.m_cote << v.m_nom << v.m_secteur << v.m_perf << v.m_commentaire;
+
+    return out;
+}
+
+QDataStream & operator>>(QDataStream & in, Voie & v)
+{
+    in >> v.m_date;
+    in >> v.m_cote;
+    in >> v.m_nom;
+    in >> v.m_secteur;
+    in >> v.m_perf;
+    in >> v.m_commentaire;
+
+    return in;
+}
+
+void Voie::initVoieSystem()
+{
+    qRegisterMetaTypeStreamOperators<Voie>("Voie");
+    qMetaTypeId<Voie>();
+
+    return;
 }

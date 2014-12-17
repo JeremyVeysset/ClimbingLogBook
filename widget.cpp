@@ -8,6 +8,7 @@
 #include <iterator>
 #include <QSettings>
 #include <QTextStream>
+#include <QFrame>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -45,12 +46,12 @@ Widget::Widget(QWidget *parent) :
     modele = new QStandardItemModel();
     vue = new QTableView();
     vue->setModel(modele);
+    vue->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+    vue->setLineWidth(2);
 
     layoutPrincipal->addLayout(layoutBarreIcones);
     layoutPrincipal->addWidget(vue);
     setLayout(layoutPrincipal);
-
-    //modele->setHorizontalHeaderLabels(headersVoies);
 
     QObject::connect(boutonChargerCarnet, SIGNAL(clicked()), this, SLOT(ouvrirFichier()));
     QObject::connect(choixTri, SIGNAL(currentIndexChanged(QString)), this, SLOT(trierVue(QString)));

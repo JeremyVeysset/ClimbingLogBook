@@ -8,7 +8,7 @@
 #include <iterator>
 #include <QSettings>
 #include <QTextStream>
-#include <QFrame>
+#include <QPalette>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -46,12 +46,16 @@ Widget::Widget(QWidget *parent) :
     modele = new QStandardItemModel();
     vue = new QTableView();
     vue->setModel(modele);
-    vue->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
-    vue->setLineWidth(2);
+    parametresVue();
 
     layoutPrincipal->addLayout(layoutBarreIcones);
     layoutPrincipal->addWidget(vue);
     setLayout(layoutPrincipal);
+
+    setAutoFillBackground(true);
+    QPalette Pal(palette());
+    Pal.setColor(QPalette::Background, QColor(248,248,255));
+    setPalette(Pal);
 
     QObject::connect(boutonChargerCarnet, SIGNAL(clicked()), this, SLOT(ouvrirFichier()));
     QObject::connect(choixTri, SIGNAL(currentIndexChanged(QString)), this, SLOT(trierVue(QString)));
@@ -80,7 +84,13 @@ Widget::~Widget()
 
 void Widget::parametresVue()
 {
-    QStringList headersVoies = Voie::nomParametres();
+    modele->setHorizontalHeaderLabels(Voie::nomParametres());
+    vue->verticalHeader()->hide();
+    vue->setShowGrid(false);
+    vue->resizeColumnsToContents();
+    vue->horizontalHeader()->setSectionsClickable(false);
+    vue->setLineWidth(2);
+
     return;
 }
 
@@ -209,7 +219,6 @@ void Widget::ecrireFichierCSV(QFile & fichier)
 void Widget::rafraichirModele()
 {
     modele->clear();
-    modele->setHorizontalHeaderLabels(Voie::nomParametres());
     for (int i=0; i<listeVoies.size(); i++)
     {
         QList <QStandardItem *> l;
@@ -222,6 +231,8 @@ void Widget::rafraichirModele()
 
         modele->appendRow(l);
     }
+
+    parametresVue();
 
     return;
 }

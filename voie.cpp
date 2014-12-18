@@ -46,7 +46,7 @@ QStringList Voie::nomParametres()
 {
     QStringList list;
     list.push_back(QString("Date"));
-    list.push_back(QString("Cote"));
+    list.push_back(QString("Côte"));
     list.push_back(QString("Nom"));
     list.push_back(QString("Secteur"));
     list.push_back(QString("Performance"));

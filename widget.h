@@ -35,14 +35,13 @@ public slots:
     void ouvrirFichier();
     void trierVue(QString const & str);
     void sauvegarderFichier();
+    void ajouterVoie();
 
 private:
     Ui::Widget *ui;
     QVBoxLayout * layoutPrincipal;
     QHBoxLayout * layoutBarreIcones;
-    QPushButton * boutonAjouterUtilisateur;
-    QPushButton * boutonSauvegarder;
-    QPushButton * boutonChargerCarnet;
+    QPushButton * boutonAjouterUtilisateur, * boutonSauvegarder, * boutonChargerCarnet, * BoutonAjouterVoie;
     QHBoxLayout * layoutTri;
     QLabel * labelTri;
     QComboBox * choixTri;

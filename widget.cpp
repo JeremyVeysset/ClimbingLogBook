@@ -23,6 +23,7 @@ Widget::Widget(QWidget *parent) :
     boutonAjouterUtilisateur = new QPushButton(QIcon(QString("./Pictures/IconeHomme.png")), QString(""));
     boutonChargerCarnet = new QPushButton(QIcon(QString("./Pictures/IconeOuvrir.png")), QString(""));
     boutonSauvegarder = new QPushButton(QIcon(QString("./Pictures/IconeSauvegarder.png")), QString(""));
+    BoutonAjouterVoie = new QPushButton(QIcon(QString("./Pictures/Plus.png")), QString(""));
     choixTri = new QComboBox();
     choixTri->addItem(QString("Côte croissante"));
     choixTri->addItem(QString("Côte décroissante"));
@@ -35,11 +36,11 @@ Widget::Widget(QWidget *parent) :
     layoutTri = new QHBoxLayout();
     layoutTri->addWidget(labelTri);
     layoutTri->addWidget(choixTri);
-    //QPushButton BoutonAjouterVoie();
 
     layoutBarreIcones->addWidget(boutonAjouterUtilisateur);
     layoutBarreIcones->addWidget(boutonChargerCarnet);
     layoutBarreIcones->addWidget(boutonSauvegarder);
+    layoutBarreIcones->addWidget(BoutonAjouterVoie);
     layoutBarreIcones->addStretch();
     layoutBarreIcones->addLayout(layoutTri);
 
@@ -60,6 +61,7 @@ Widget::Widget(QWidget *parent) :
     QObject::connect(boutonChargerCarnet, SIGNAL(clicked()), this, SLOT(ouvrirFichier()));
     QObject::connect(choixTri, SIGNAL(currentIndexChanged(QString)), this, SLOT(trierVue(QString)));
     QObject::connect(boutonSauvegarder, SIGNAL(clicked()), this, SLOT(sauvegarderFichier()));
+    QObject::connect(BoutonAjouterVoie, SIGNAL(clicked()), this, SLOT(ajouterVoie()));
 }
 
 Widget::~Widget()
@@ -70,6 +72,7 @@ Widget::~Widget()
     delete boutonAjouterUtilisateur;
     delete boutonSauvegarder;
     delete boutonChargerCarnet;
+    delete BoutonAjouterVoie;
     delete layoutTri;
     delete labelTri;
     delete choixTri;
@@ -234,5 +237,10 @@ void Widget::rafraichirModele()
 
     parametresVue();
 
+    return;
+}
+
+void Widget::ajouterVoie()
+{
     return;
 }

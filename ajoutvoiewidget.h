@@ -13,23 +13,28 @@
 
 class AjoutVoieWidget : public QWidget
 {
+    Q_OBJECT
+
 public:
     AjoutVoieWidget(QWidget * widget=0);
     ~AjoutVoieWidget();
     void reinit();
 
 public slots:
-    Voie creerVoie();
+    void creerVoie();
     void hide();
+
+signals:
+    void accepted(Voie const & v);
 
 private:
     QVBoxLayout * pLayout;
     QHBoxLayout * buttonLayout;
     QFormLayout * formLayout;
     QPushButton * okButton, * annulerButton;
-    QLineEdit * coteEdit, * nomEdit, * secteurEdit, * commentaireEdit;
+    QLineEdit * nomEdit, * secteurEdit, * commentaireEdit;
     QDateEdit * dateEdit;
-    QComboBox * perfEdit;
+    QComboBox * perfEdit, * coteEdit;
 };
 
 #endif // AJOUTVOIEWIDGET_H

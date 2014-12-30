@@ -14,6 +14,7 @@
 #include <QLabel>
 #include "voie.h"
 #include <QVector>
+#include "ajoutvoiewidget.h"
 
 namespace Ui {
 class Widget;
@@ -35,7 +36,7 @@ public slots:
     void ouvrirFichier();
     void trierVue(QString const & str);
     void sauvegarderFichier();
-    void ajouterVoie();
+    void ajouterVoie(Voie const & v);
 
 private:
     Ui::Widget *ui;
@@ -48,6 +49,7 @@ private:
     QStandardItemModel * modele;
     QTableView * vue;
     QVector <Voie *> listeVoies;
+    AjoutVoieWidget * ajoutWidgetVoie;
 
     void rafraichirModele();
     void parametresVue();

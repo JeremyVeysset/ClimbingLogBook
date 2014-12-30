@@ -9,6 +9,8 @@
 #include <QSettings>
 #include <QTextStream>
 #include <QPalette>
+#include <QInputDialog>
+#include "ajoutvoiewidget.h"
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -20,10 +22,10 @@ Widget::Widget(QWidget *parent) :
     layoutPrincipal = new QVBoxLayout;
     layoutBarreIcones = new QHBoxLayout;
 
-    boutonAjouterUtilisateur = new QPushButton(QIcon(QString("./Pictures/IconeHomme.png")), QString(""));
-    boutonChargerCarnet = new QPushButton(QIcon(QString("./Pictures/IconeOuvrir.png")), QString(""));
-    boutonSauvegarder = new QPushButton(QIcon(QString("./Pictures/IconeSauvegarder.png")), QString(""));
-    BoutonAjouterVoie = new QPushButton(QIcon(QString("./Pictures/Plus.png")), QString(""));
+    boutonAjouterUtilisateur = new QPushButton(QIcon(QString("./Pictures/IconUser.png")), QString(""));
+    boutonChargerCarnet = new QPushButton(QIcon(QString("./Pictures/OpenIcon.png")), QString(""));
+    boutonSauvegarder = new QPushButton(QIcon(QString("./Pictures/SaveIcon.png")), QString(""));
+    BoutonAjouterVoie = new QPushButton(QIcon(QString("./Pictures/AddRouteIcon.png")), QString(""));
     choixTri = new QComboBox();
     choixTri->addItem(QString("Côte croissante"));
     choixTri->addItem(QString("Côte décroissante"));
@@ -58,10 +60,14 @@ Widget::Widget(QWidget *parent) :
     Pal.setColor(QPalette::Background, QColor(248,248,255));
     setPalette(Pal);
 
+    ajoutWidgetVoie = new AjoutVoieWidget();
+    ajoutWidgetVoie->hide();
+
     QObject::connect(boutonChargerCarnet, SIGNAL(clicked()), this, SLOT(ouvrirFichier()));
     QObject::connect(choixTri, SIGNAL(currentIndexChanged(QString)), this, SLOT(trierVue(QString)));
     QObject::connect(boutonSauvegarder, SIGNAL(clicked()), this, SLOT(sauvegarderFichier()));
-    QObject::connect(BoutonAjouterVoie, SIGNAL(clicked()), this, SLOT(ajouterVoie()));
+    QObject::connect(BoutonAjouterVoie, SIGNAL(clicked()), ajoutWidgetVoie, SLOT(show()));
+    QObject::connect(ajoutWidgetVoie, SIGNAL(accepted(Voie)), this, SLOT(ajouterVoie(Voie)));
 }
 
 Widget::~Widget()
@@ -83,6 +89,8 @@ Widget::~Widget()
 
     for (int i=0; i<listeVoies.size(); i++)
         delete listeVoies[i];
+
+    delete ajoutWidgetVoie;
 }
 
 void Widget::parametresVue()
@@ -100,17 +108,17 @@ void Widget::parametresVue()
 void Widget::trierVue(QString const & str)
 {
     if (str == choixTri->itemText(0))
-        vue->sortByColumn(2,Qt::AscendingOrder);
+        vue->sortByColumn(1,Qt::AscendingOrder);
     else if (str == choixTri->itemText(1))
-        vue->sortByColumn(2,Qt::DescendingOrder);
+        vue->sortByColumn(1,Qt::DescendingOrder);
     else if (str == choixTri->itemText(2))
         vue->sortByColumn(0,Qt::AscendingOrder);
     else if (str == choixTri->itemText(3))
         vue->sortByColumn(0,Qt::DescendingOrder);
     else if (str == choixTri->itemText(4))
-        vue->sortByColumn(1,Qt::AscendingOrder);
+        vue->sortByColumn(2,Qt::AscendingOrder);
     else if (str == choixTri->itemText(5))
-        vue->sortByColumn(1,Qt::DescendingOrder);
+        vue->sortByColumn(2,Qt::DescendingOrder);
     else if (str == choixTri->itemText(6))
         vue->sortByColumn(3,Qt::AscendingOrder);
 }
@@ -226,8 +234,8 @@ void Widget::rafraichirModele()
     {
         QList <QStandardItem *> l;
         l.append(new QStandardItem(listeVoies[i]->getDate().toString(QString("yyyy/MM/dd"))));
-        l.append(new QStandardItem(listeVoies[i]->getNom()));
         l.append(new QStandardItem(listeVoies[i]->getCote()));
+        l.append(new QStandardItem(listeVoies[i]->getNom()));
         l.append(new QStandardItem(listeVoies[i]->getSecteur()));
         l.append(new QStandardItem(listeVoies[i]->getPerf()));
         l.append(new QStandardItem(listeVoies[i]->getCommmentaire()));
@@ -240,7 +248,10 @@ void Widget::rafraichirModele()
     return;
 }
 
-void Widget::ajouterVoie()
+void Widget::ajouterVoie(Voie const & v)
 {
+    listeVoies.push_back(new Voie(v));
+    rafraichirModele();
+    trierVue(choixTri->currentText());
     return;
 }

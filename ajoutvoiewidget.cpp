@@ -3,11 +3,13 @@
 
 AjoutVoieWidget::AjoutVoieWidget(QWidget * widget) : QWidget(widget)
 {
+    setWindowModality(Qt::ApplicationModal);
+
     pLayout = new QVBoxLayout();
     buttonLayout = new QHBoxLayout();
     formLayout = new QFormLayout();
     dateEdit = new QDateEdit(QDate::currentDate());
-    coteEdit = new QLineEdit();
+    coteEdit = new QComboBox();
     nomEdit = new QLineEdit();
     secteurEdit = new QLineEdit();
     commentaireEdit = new QLineEdit();
@@ -15,10 +17,15 @@ AjoutVoieWidget::AjoutVoieWidget(QWidget * widget) : QWidget(widget)
     okButton = new QPushButton(QString("Ok"));
     annulerButton = new QPushButton(QString("Annuler"));
 
-    perfEdit->addItem(QString(""));
-    perfEdit->addItem(QString("On sight"));
-    perfEdit->addItem(QString("Flash"));
-    perfEdit->addItem(QString("Second go"));
+    QStringList s;
+    s << "5a" << "5a+" << "5b" << "5b+" << "5c" << "5c+" << "6a" << "6a+" << "6b" << "6b+" << "6c" << "6c+";
+    s << "7a" << "7a+" << "7b" << "7b+" << "7c" << "7c+" << "8a" << "8a+" << "8b" << "8b+" << "8c" << "8c+";
+    s << "9a" << "9a+" << "9b" << "9b+" << "9c";
+    coteEdit->addItems(QStringList(s));
+
+    s.clear();
+    s << "" << "On sight" << "Flash" << "Second go";
+    perfEdit->addItems(s);
 
     formLayout->addRow(QString("Date"), dateEdit);
     formLayout->addRow(QString("Côte"), coteEdit);
@@ -36,6 +43,7 @@ AjoutVoieWidget::AjoutVoieWidget(QWidget * widget) : QWidget(widget)
     this->setLayout(pLayout);
 
     QObject::connect(annulerButton, SIGNAL(clicked()), this, SLOT(hide()));
+    QObject::connect(okButton, SIGNAL(clicked()), this, SLOT(creerVoie()));
 }
 
 AjoutVoieWidget::~AjoutVoieWidget()
@@ -53,16 +61,17 @@ AjoutVoieWidget::~AjoutVoieWidget()
     delete perfEdit;
 }
 
-Voie AjoutVoieWidget::creerVoie()
+void AjoutVoieWidget::creerVoie()
 {
-    Voie v(dateEdit->date(), coteEdit->text(), nomEdit->text(), secteurEdit->text(), commentaireEdit->text(), perfEdit->currentText());
-    return v;
+    Voie v(dateEdit->date(), coteEdit->currentText(), nomEdit->text(), secteurEdit->text(), commentaireEdit->text(), perfEdit->currentText());
+    emit accepted(v);
+    hide();
 }
 
 void AjoutVoieWidget::reinit()
 {
     dateEdit->setDate(QDate::currentDate());
-    coteEdit->setText(QString(""));
+    coteEdit->setCurrentIndex(0);
     nomEdit->setText(QString(""));
     secteurEdit->setText(QString(""));
     commentaireEdit->setText(QString(""));

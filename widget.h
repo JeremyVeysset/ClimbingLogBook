@@ -12,8 +12,9 @@
 #include <QDate>
 #include <QComboBox>
 #include <QLabel>
-#include "voie.h"
 #include <QVector>
+#include <QSharedPointer>
+#include "voie.h"
 #include "ajoutvoiewidget.h"
 
 namespace Ui {
@@ -39,17 +40,17 @@ public slots:
     void ajouterVoie(Voie const & v);
 
 private:
-    Ui::Widget *ui;
-    QVBoxLayout * layoutPrincipal;
-    QHBoxLayout * layoutBarreIcones;
-    QPushButton * boutonAjouterUtilisateur, * boutonSauvegarder, * boutonChargerCarnet, * BoutonAjouterVoie;
-    QHBoxLayout * layoutTri;
-    QLabel * labelTri;
-    QComboBox * choixTri;
-    QStandardItemModel * modele;
-    QTableView * vue;
-    QVector <Voie *> listeVoies;
-    AjoutVoieWidget * ajoutWidgetVoie;
+    QSharedPointer <Ui::Widget> ui;
+    QSharedPointer <QVBoxLayout> layoutPrincipal;
+    QSharedPointer <QHBoxLayout> layoutBarreIcones;
+    QSharedPointer <QPushButton> boutonAjouterUtilisateur, boutonSauvegarder, boutonChargerCarnet, BoutonAjouterVoie;
+    QSharedPointer <QHBoxLayout> layoutTri;
+    QSharedPointer <QLabel> labelTri;
+    QSharedPointer <QComboBox> choixTri;
+    QSharedPointer <QStandardItemModel> modele;
+    QSharedPointer <QTableView> vue;
+    QVector <QSharedPointer <Voie> > listeVoies;
+    QSharedPointer <AjoutVoieWidget> ajoutWidgetVoie;
 
     void rafraichirModele();
     void parametresVue();

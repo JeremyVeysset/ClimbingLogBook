@@ -9,6 +9,7 @@
 #include <QLineEdit>
 #include <QDateEdit>
 #include <QComboBox>
+#include <QSharedPointer>
 #include "voie.h"
 
 class AjoutVoieWidget : public QWidget
@@ -28,13 +29,13 @@ signals:
     void accepted(Voie const & v);
 
 private:
-    QVBoxLayout * pLayout;
-    QHBoxLayout * buttonLayout;
-    QFormLayout * formLayout;
-    QPushButton * okButton, * annulerButton;
-    QLineEdit * nomEdit, * secteurEdit, * commentaireEdit;
-    QDateEdit * dateEdit;
-    QComboBox * perfEdit, * coteEdit;
+    QSharedPointer <QVBoxLayout> pLayout;
+    QSharedPointer <QHBoxLayout> buttonLayout;
+    QSharedPointer <QFormLayout> formLayout;
+    QSharedPointer <QPushButton> okButton, annulerButton;
+    QSharedPointer <QLineEdit> nomEdit, secteurEdit, commentaireEdit;
+    QSharedPointer <QDateEdit> dateEdit;
+    QSharedPointer <QComboBox> perfEdit, coteEdit;
 };
 
 #endif // AJOUTVOIEWIDGET_H

@@ -5,17 +5,17 @@ AjoutVoieWidget::AjoutVoieWidget(QWidget * widget) : QWidget(widget)
 {
     setWindowModality(Qt::ApplicationModal);
 
-    pLayout = new QVBoxLayout();
-    buttonLayout = new QHBoxLayout();
-    formLayout = new QFormLayout();
-    dateEdit = new QDateEdit(QDate::currentDate());
-    coteEdit = new QComboBox();
-    nomEdit = new QLineEdit();
-    secteurEdit = new QLineEdit();
-    commentaireEdit = new QLineEdit();
-    perfEdit = new QComboBox();
-    okButton = new QPushButton(QString("Ok"));
-    annulerButton = new QPushButton(QString("Annuler"));
+    pLayout = QSharedPointer <QVBoxLayout> (new QVBoxLayout());
+    buttonLayout = QSharedPointer <QHBoxLayout> (new QHBoxLayout());
+    formLayout = QSharedPointer <QFormLayout> (new QFormLayout());
+    dateEdit = QSharedPointer <QDateEdit> (new QDateEdit(QDate::currentDate()));
+    coteEdit = QSharedPointer <QComboBox> (new QComboBox());
+    nomEdit = QSharedPointer <QLineEdit> (new QLineEdit());
+    secteurEdit = QSharedPointer <QLineEdit> (new QLineEdit());
+    commentaireEdit = QSharedPointer <QLineEdit> (new QLineEdit());
+    perfEdit = QSharedPointer <QComboBox> (new QComboBox());
+    okButton = QSharedPointer <QPushButton> (new QPushButton(QString("Ok")));
+    annulerButton = QSharedPointer <QPushButton> (new QPushButton(QString("Annuler")));
 
     QStringList s;
     s << "5a" << "5a+" << "5b" << "5b+" << "5c" << "5c+" << "6a" << "6a+" << "6b" << "6b+" << "6c" << "6c+";
@@ -27,38 +27,27 @@ AjoutVoieWidget::AjoutVoieWidget(QWidget * widget) : QWidget(widget)
     s << "" << "On sight" << "Flash" << "Second go";
     perfEdit->addItems(s);
 
-    formLayout->addRow(QString("Date"), dateEdit);
-    formLayout->addRow(QString("Côte"), coteEdit);
-    formLayout->addRow(QString("Nom"), nomEdit);
-    formLayout->addRow(QString("Secteur"), secteurEdit);
-    formLayout->addRow(QString("Commentaire"), commentaireEdit);
-    formLayout->addRow(QString("Performance"), perfEdit);
+    formLayout->addRow(QString("Date"), dateEdit.data());
+    formLayout->addRow(QString("Côte"), coteEdit.data());
+    formLayout->addRow(QString("Nom"), nomEdit.data());
+    formLayout->addRow(QString("Secteur"), secteurEdit.data());
+    formLayout->addRow(QString("Commentaire"), commentaireEdit.data());
+    formLayout->addRow(QString("Performance"), perfEdit.data());
 
     buttonLayout->addStretch();
-    buttonLayout->addWidget(okButton);
-    buttonLayout->addWidget(annulerButton);
+    buttonLayout->addWidget(okButton.data());
+    buttonLayout->addWidget(annulerButton.data());
 
-    pLayout->addLayout(formLayout);
-    pLayout->addLayout(buttonLayout);
-    this->setLayout(pLayout);
+    pLayout->addLayout(formLayout.data());
+    pLayout->addLayout(buttonLayout.data());
+    this->setLayout(pLayout.data());
 
-    QObject::connect(annulerButton, SIGNAL(clicked()), this, SLOT(hide()));
-    QObject::connect(okButton, SIGNAL(clicked()), this, SLOT(creerVoie()));
+    QObject::connect(annulerButton.data(), SIGNAL(clicked()), this, SLOT(hide()));
+    QObject::connect(okButton.data(), SIGNAL(clicked()), this, SLOT(creerVoie()));
 }
 
 AjoutVoieWidget::~AjoutVoieWidget()
 {
-    delete pLayout;
-    delete formLayout;
-    delete buttonLayout;
-    delete okButton;
-    delete annulerButton;
-    delete dateEdit;
-    delete coteEdit;
-    delete nomEdit;
-    delete secteurEdit;
-    delete commentaireEdit;
-    delete perfEdit;
 }
 
 void AjoutVoieWidget::creerVoie()

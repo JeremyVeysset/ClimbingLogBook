@@ -19,14 +19,14 @@ Widget::Widget(QWidget *parent) :
     Voie::initVoieSystem();
 
     ui->setupUi(this);
-    layoutPrincipal = new QVBoxLayout;
-    layoutBarreIcones = new QHBoxLayout;
+    layoutPrincipal = QSharedPointer <QVBoxLayout> (new QVBoxLayout);
+    layoutBarreIcones = QSharedPointer <QHBoxLayout> (new QHBoxLayout);
 
-    boutonAjouterUtilisateur = new QPushButton(QIcon(QString("./Pictures/IconUser.png")), QString(""));
-    boutonChargerCarnet = new QPushButton(QIcon(QString("./Pictures/OpenIcon.png")), QString(""));
-    boutonSauvegarder = new QPushButton(QIcon(QString("./Pictures/SaveIcon.png")), QString(""));
-    BoutonAjouterVoie = new QPushButton(QIcon(QString("./Pictures/AddRouteIcon.png")), QString(""));
-    choixTri = new QComboBox();
+    boutonAjouterUtilisateur = QSharedPointer <QPushButton> (new QPushButton(QIcon(QString("./Pictures/IconUser.png")), QString("")));
+    boutonChargerCarnet = QSharedPointer <QPushButton> (new QPushButton(QIcon(QString("./Pictures/OpenIcon.png")), QString("")));
+    boutonSauvegarder = QSharedPointer <QPushButton> (new QPushButton(QIcon(QString("./Pictures/SaveIcon.png")), QString("")));
+    BoutonAjouterVoie = QSharedPointer <QPushButton> (new QPushButton(QIcon(QString("./Pictures/AddRouteIcon.png")), QString("")));
+    choixTri = QSharedPointer <QComboBox> (new QComboBox());
     choixTri->addItem(QString("Côte croissante"));
     choixTri->addItem(QString("Côte décroissante"));
     choixTri->addItem(QString("Date croissante"));
@@ -34,63 +34,44 @@ Widget::Widget(QWidget *parent) :
     choixTri->addItem(QString("Nom croissant"));
     choixTri->addItem(QString("Nom décroissant"));
     choixTri->addItem(QString("Secteur"));
-    labelTri = new QLabel(QString("Trier par :"));
-    layoutTri = new QHBoxLayout();
-    layoutTri->addWidget(labelTri);
-    layoutTri->addWidget(choixTri);
+    labelTri = QSharedPointer <QLabel> (new QLabel(QString("Trier par :")));
+    layoutTri = QSharedPointer <QHBoxLayout> (new QHBoxLayout());
+    layoutTri->addWidget(labelTri.data());
+    layoutTri->addWidget(choixTri.data());
 
-    layoutBarreIcones->addWidget(boutonAjouterUtilisateur);
-    layoutBarreIcones->addWidget(boutonChargerCarnet);
-    layoutBarreIcones->addWidget(boutonSauvegarder);
-    layoutBarreIcones->addWidget(BoutonAjouterVoie);
+    layoutBarreIcones->addWidget(boutonAjouterUtilisateur.data());
+    layoutBarreIcones->addWidget(boutonChargerCarnet.data());
+    layoutBarreIcones->addWidget(boutonSauvegarder.data());
+    layoutBarreIcones->addWidget(BoutonAjouterVoie.data());
     layoutBarreIcones->addStretch();
-    layoutBarreIcones->addLayout(layoutTri);
+    layoutBarreIcones->addLayout(layoutTri.data());
 
-    modele = new QStandardItemModel();
-    vue = new QTableView();
-    vue->setModel(modele);
+    modele = QSharedPointer <QStandardItemModel> (new QStandardItemModel());
+    vue = QSharedPointer <QTableView> (new QTableView());
+    vue->setModel(modele.data());
     parametresVue();
 
-    layoutPrincipal->addLayout(layoutBarreIcones);
-    layoutPrincipal->addWidget(vue);
-    setLayout(layoutPrincipal);
+    layoutPrincipal->addLayout(layoutBarreIcones.data());
+    layoutPrincipal->addWidget(vue.data());
+    setLayout(layoutPrincipal.data());
 
     setAutoFillBackground(true);
     QPalette Pal(palette());
     Pal.setColor(QPalette::Background, QColor(248,248,255));
     setPalette(Pal);
 
-    ajoutWidgetVoie = new AjoutVoieWidget();
+    ajoutWidgetVoie = QSharedPointer <AjoutVoieWidget> (new AjoutVoieWidget());
     ajoutWidgetVoie->hide();
 
-    QObject::connect(boutonChargerCarnet, SIGNAL(clicked()), this, SLOT(ouvrirFichier()));
-    QObject::connect(choixTri, SIGNAL(currentIndexChanged(QString)), this, SLOT(trierVue(QString)));
-    QObject::connect(boutonSauvegarder, SIGNAL(clicked()), this, SLOT(sauvegarderFichier()));
-    QObject::connect(BoutonAjouterVoie, SIGNAL(clicked()), ajoutWidgetVoie, SLOT(show()));
-    QObject::connect(ajoutWidgetVoie, SIGNAL(accepted(Voie)), this, SLOT(ajouterVoie(Voie)));
+    QObject::connect(boutonChargerCarnet.data(), SIGNAL(clicked()), this, SLOT(ouvrirFichier()));
+    QObject::connect(choixTri.data(), SIGNAL(currentIndexChanged(QString)), this, SLOT(trierVue(QString)));
+    QObject::connect(boutonSauvegarder.data(), SIGNAL(clicked()), this, SLOT(sauvegarderFichier()));
+    QObject::connect(BoutonAjouterVoie.data(), SIGNAL(clicked()), ajoutWidgetVoie.data(), SLOT(show()));
+    QObject::connect(ajoutWidgetVoie.data(), SIGNAL(accepted(Voie)), this, SLOT(ajouterVoie(Voie)));
 }
 
 Widget::~Widget()
 {
-    delete ui;
-    delete layoutPrincipal;
-    delete layoutBarreIcones;
-    delete boutonAjouterUtilisateur;
-    delete boutonSauvegarder;
-    delete boutonChargerCarnet;
-    delete BoutonAjouterVoie;
-    delete layoutTri;
-    delete labelTri;
-    delete choixTri;
-    delete vue;
-
-    modele->clear();
-    delete modele;
-
-    for (int i=0; i<listeVoies.size(); i++)
-        delete listeVoies[i];
-
-    delete ajoutWidgetVoie;
 }
 
 void Widget::parametresVue()
@@ -157,8 +138,6 @@ void Widget::lectureFichierCMB(QFile & fichier)
     fichier.open(QIODevice::ReadOnly);
     QDataStream in(&fichier);
 
-    for (i=0; i<listeVoies.size(); i++)
-        delete listeVoies[i];
     listeVoies.clear();
 
     i = 0;
@@ -166,7 +145,7 @@ void Widget::lectureFichierCMB(QFile & fichier)
     {
         Voie v;
         in >> v;
-        listeVoies.append(new Voie(v));
+        listeVoies.append(QSharedPointer <Voie> (new Voie(v)));
     }
 
     fichier.close();
@@ -183,7 +162,7 @@ void Widget::lectureFichierCSV(QFile & fichier)
     while (!fichier.atEnd())
     {
         ligne = fichier.readLine();
-        listeVoies.push_back(new Voie(ligne));
+        listeVoies.push_back(QSharedPointer <Voie> (new Voie(ligne)));
     }
 
     trierVue(choixTri->currentText());
@@ -250,7 +229,7 @@ void Widget::rafraichirModele()
 
 void Widget::ajouterVoie(Voie const & v)
 {
-    listeVoies.push_back(new Voie(v));
+    listeVoies.push_back(QSharedPointer <Voie> (new Voie(v)));
     rafraichirModele();
     trierVue(choixTri->currentText());
     return;

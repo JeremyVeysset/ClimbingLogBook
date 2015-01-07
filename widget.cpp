@@ -19,6 +19,8 @@ Widget::Widget(QWidget *parent) :
     Voie::initVoieSystem();
 
     ui->setupUi(this);
+
+    setWindowTitle(QString("Climbing Log Book"));
     layoutPrincipal = QSharedPointer <QVBoxLayout> (new QVBoxLayout);
     layoutBarreIcones = QSharedPointer <QHBoxLayout> (new QHBoxLayout);
 
